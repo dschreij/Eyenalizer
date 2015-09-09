@@ -18,6 +18,9 @@ import sys
 import os
 from PyQt4 import QtCore, QtGui, uic
 
+__authors__ = "Artem Belopolsky & Daniel Schreij"
+__version__ = "0.1.0"
+
 def get_resource_loc(item):
 	"""
 	Determines the correct path to the required resource.
