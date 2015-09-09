@@ -36,3 +36,8 @@
 ehthumbs.db
 Thumbs.db
 .dropbox
+
+# Python files#
+###############
+*.pyc
+*.pyo
