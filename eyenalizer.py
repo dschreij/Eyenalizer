@@ -76,6 +76,10 @@ class Output:
 
 		if self.out:
 			self.out.write(m)
+			
+	def flush(self):
+		if hasattr(self.out,"flush"):
+			self.out.flush()
 
 class EyenalyzeGUI(QtGui.QMainWindow):
 	def __init__(self):
@@ -121,11 +125,21 @@ class EyenalyzeGUI(QtGui.QMainWindow):
 	def openFile(self):
 		# Open file, start in home folder of user
 		self.filePath = QtGui.QFileDialog.getOpenFileName(self, "Open File", QtCore.QDir.homePath())
-		print("Loaded " + self.filePath)		
-		print(open(self.filePath,"r").read())		
-		filename = os.path.split(self.filePath)[1]
-		node = QtGui.QTreeWidgetItem([filename])
-		self.ui.treeLoadedFiles.addTopLevelItem(node)
+		if self.filePath != "":
+			if os.path.exists(self.filePath) and os.path.isfile(self.filePath):
+				print("Loaded " + self.filePath)		
+				# Add filename to filetree		
+				filename = os.path.split(self.filePath)[1]
+				node = QtGui.QTreeWidgetItem([filename])
+				self.ui.treeLoadedFiles.addTopLevelItem(node)
+				# Load contents in raw display tab
+				filecontents = open(self.filePath,"r").read()
+				self.ui.textboxRawFile.clear()
+				self.ui.textboxRawFile.insertPlainText(filecontents)
+				# Make sure the messages are immediately shown
+				QtCore.QCoreApplication.instance().processEvents()
+			else:
+				raise IOError("Invalid file selected")
 		
 	def importFiles(self):
 		# Import raw datafiles, start in home folder of user
