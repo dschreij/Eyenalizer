@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1009</width>
-    <height>771</height>
+    <width>1346</width>
+    <height>975</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -17,17 +17,34 @@
    <layout class="QGridLayout" name="gridLayout_2">
     <item row="1" column="0">
      <widget class="QTabWidget" name="tabWidget">
-      <property name="currentIndex">
-       <number>0</number>
+      <property name="minimumSize">
+       <size>
+        <width>100</width>
+        <height>0</height>
+       </size>
       </property>
-      <widget class="QWidget" name="tab">
+      <property name="currentIndex">
+       <number>2</number>
+      </property>
+      <widget class="QWidget" name="tabRawFile">
        <attribute name="title">
-        <string>Tab 1</string>
+        <string>Raw file contents</string>
        </attribute>
+       <layout class="QGridLayout" name="gridLayout_4">
+        <item row="0" column="0">
+         <widget class="QTextBrowser" name="textboxRawFile"/>
+        </item>
+       </layout>
       </widget>
-      <widget class="QWidget" name="tab_2">
+      <widget class="QWidget" name="tabVisualisation">
        <attribute name="title">
-        <string>Tab 2</string>
+        <string>Visualisation</string>
+       </attribute>
+       <layout class="QGridLayout" name="gridLayout_5"/>
+      </widget>
+      <widget class="QWidget" name="tabReport">
+       <attribute name="title">
+        <string>Report</string>
        </attribute>
       </widget>
      </widget>
@@ -39,8 +56,8 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1009</width>
-     <height>25</height>
+     <width>1346</width>
+     <height>21</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
