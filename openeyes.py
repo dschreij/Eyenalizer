@@ -10,6 +10,10 @@ from __future__ import division
 from __future__ import print_function
 from __future__ import unicode_literals
 
+# Use Python3 string instead of deprecated QString
+import sip
+sip.setapi('QString', 2)
+
 import sys
 import os
 from PyQt4 import QtCore, QtGui, uic
@@ -81,7 +85,7 @@ class Output:
 		if hasattr(self.out,"flush"):
 			self.out.flush()
 
-class EyenalyzeGUI(QtGui.QMainWindow):
+class OpenEyesGUI(QtGui.QMainWindow):
 	def __init__(self):
 		app = QtGui.QApplication(sys.argv)
 		self.ui = self._initUI()	
@@ -98,7 +102,7 @@ class EyenalyzeGUI(QtGui.QMainWindow):
 
 		# Load and setup UI
 		ui = uic.loadUi(ui_path)
-		ui.setWindowTitle('Eyenalizer')		
+		ui.setWindowTitle('Open Eyes')		
 		ui.show()
 		
 		# Connect menu buttons to functions
@@ -165,4 +169,4 @@ class EyenalyzeGUI(QtGui.QMainWindow):
 				self.toggleDockWidget(False)
 		
 if __name__ == "__main__":
-	EyenalyzeGUI()
+	OpenEyesGUI()
