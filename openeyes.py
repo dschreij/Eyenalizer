@@ -14,8 +14,15 @@ from __future__ import unicode_literals
 import sip
 sip.setapi('QString', 2)
 
+# Tables for HDF5 file handling
+import pandas as pd
+# Set default from fixed to table format (Enables append)
+pd.set_option('io.hdf.default_format','table')
+
 import sys
 import os
+
+# Gui componentes
 from PyQt4 import QtCore, QtGui, uic
 
 __authors__ = "Artem Belopolsky & Daniel Schreij"
@@ -87,9 +94,25 @@ class Output:
 
 class OpenEyesGUI(QtGui.QMainWindow):
 	def __init__(self):
+		# Create temporary hdf_file to store data in
+		self.TEMPFILENAME = "temp.h5"
+		self.tempfile_path = os.path.abspath(self.TEMPFILENAME)
+		self.current_datafile = self.TEMPFILENAME
+		
+		self.hdf5_file = pd.HDFStore(self.tempfile_path)
+
 		app = QtGui.QApplication(sys.argv)
 		self.ui = self._initUI()	
-		sys.exit(app.exec_())
+		exitcode = app.exec_()
+		
+		if self.hdf5_file.is_open:
+			self.hdf5_file.close()
+		
+		# Clean up temp files
+#		if os.path.exists(self.tempfile_path) and os.path.isfile(self.tempfile_path):
+#			os.remove(self.tempfile_path)
+		
+		sys.exit(exitcode)
 	
 	def _initUI(self):
 		"""
@@ -138,13 +161,19 @@ class OpenEyesGUI(QtGui.QMainWindow):
 				self.ui.treeLoadedFiles.addTopLevelItem(node)
 				# Load contents in raw display tab
 				filecontents = open(self.filePath,"r").read()
+				
+				data = pd.DataFrame(data=[[str(filename), filecontents]],columns=["filename","contents"])
+				# Add file to HDF
+				self.hdf5_file.append('raw', data)
+								
 				self.ui.textboxRawFile.clear()
 				self.ui.textboxRawFile.insertPlainText(filecontents)
 				# Make sure the messages are immediately shown
 				QtCore.QCoreApplication.instance().processEvents()
 			else:
 				raise IOError("Invalid file selected")
-		
+	
+	
 	def importFiles(self):
 		# Import raw datafiles, start in home folder of user
 		self.fileName = QtGui.QFileDialog.getOpenFileName(self, "Import Files", QtCore.QDir.homePath())
@@ -170,3 +199,5 @@ class OpenEyesGUI(QtGui.QMainWindow):
 		
 if __name__ == "__main__":
 	OpenEyesGUI()
+	
+	
