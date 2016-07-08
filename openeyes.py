@@ -23,7 +23,7 @@ import sys
 import os
 
 # Gui componentes
-from PyQt4 import QtCore, QtGui, uic
+from qtpy import QtCore, QtGui, QtWidgets, uic
 
 __authors__ = "Artem Belopolsky & Daniel Schreij"
 __version__ = "0.1.0"
@@ -50,7 +50,7 @@ def get_resource_loc(item):
 			return os.path.join(basedir,item)			
 		except:
 			# If packaged with py2exe (but should also work for py2installer (not tested!) )
-			basedir = os.path.dirname(unicode(sys.executable, sys.getfilesystemencoding( )))
+			basedir = os.path.dirname(sys.executable, sys.getfilesystemencoding())
 			if sys.platform == "win32":
 				return os.path.join(basedir, "resources", item)
 			elif sys.platform == "darwin":
@@ -77,13 +77,13 @@ class Output:
 		self.color = color
 
 	def write(self, m):
-		#self.statusBox.moveCursor(QtGui.QTextCursor.End)
+		#self.statusBox.moveCursor(QtWidgets.QTextCursor.End)
 		if self.color:
 			self.statusBox.setTextColor(self.color)
 
 		self.statusBox.insertPlainText( m )
 		# Make sure the messages are immediately shown
-		QtCore.QCoreApplication.instance().processEvents()
+		QtWidgets.QCoreApplication.instance().processEvents()
 
 		if self.out:
 			self.out.write(m)
@@ -92,7 +92,7 @@ class Output:
 		if hasattr(self.out,"flush"):
 			self.out.flush()
 
-class OpenEyesGUI(QtGui.QMainWindow):
+class OpenEyesGUI(QtWidgets.QMainWindow):
 	def __init__(self):
 		# Create temporary hdf_file to store data in
 		self.TEMPFILENAME = "temp.h5"
@@ -101,7 +101,7 @@ class OpenEyesGUI(QtGui.QMainWindow):
 		
 		self.hdf5_file = pd.HDFStore(self.tempfile_path)
 
-		app = QtGui.QApplication(sys.argv)
+		app = QtWidgets.QApplication(sys.argv)
 		self.ui = self._initUI()	
 		exitcode = app.exec_()
 		
@@ -118,7 +118,7 @@ class OpenEyesGUI(QtGui.QMainWindow):
 		"""
 		Initializes the UI and sets button actions
 		"""							
-		QtGui.QMainWindow.__init__(self)
+		QtWidgets.QMainWindow.__init__(self)
 		
 		# Load resources							
 		ui_path = get_resource_loc("firstdraft.ui")
@@ -151,13 +151,13 @@ class OpenEyesGUI(QtGui.QMainWindow):
 		
 	def openFile(self):
 		# Open file, start in home folder of user
-		self.filePath = QtGui.QFileDialog.getOpenFileName(self, "Open File", QtCore.QDir.homePath())
+		self.filePath = QtWidgets.QFileDialog.getOpenFileName(self, "Open File", QtCore.QDir.homePath())
 		if self.filePath != "":
 			if os.path.exists(self.filePath) and os.path.isfile(self.filePath):
 				print("Loaded " + self.filePath)		
 				# Add filename to filetree		
 				filename = os.path.split(self.filePath)[1]
-				node = QtGui.QTreeWidgetItem([filename])
+				node = QtWidgets.QTreeWidgetItem([filename])
 				self.ui.treeLoadedFiles.addTopLevelItem(node)
 				# Load contents in raw display tab
 				filecontents = open(self.filePath,"r").read()
@@ -176,22 +176,22 @@ class OpenEyesGUI(QtGui.QMainWindow):
 	
 	def importFiles(self):
 		# Import raw datafiles, start in home folder of user
-		self.fileName = QtGui.QFileDialog.getOpenFileName(self, "Import Files", QtCore.QDir.homePath())
+		self.fileName = QtWidgets.QFileDialog.getOpenFileName(self, "Import Files", QtCore.QDir.homePath())
 		
 	def toggleDockWidget(self, checked):	
 		sender_name = self.sender().objectName()
-		if type(self.sender()) == QtGui.QDockWidget:
+		if type(self.sender()) == QtWidgets.QDockWidget:
 			toggle_action = "toggle" + sender_name[0].upper() + sender_name[1:]
-			menuItem = self.ui.findChild(QtGui.QAction, toggle_action)
+			menuItem = self.ui.findChild(QtWidgets.QAction, toggle_action)
 			menuItem.setChecked(checked)
 		
-		if type(self.sender()) == QtGui.QAction:
+		if type(self.sender()) == QtWidgets.QAction:
 			sender_name = sender_name.replace("toggle","")
-			dockWidget = self.ui.findChild(QtGui.QWidget, sender_name[0].lower() + sender_name[1:])
+			dockWidget = self.ui.findChild(QtWidgets.QWidget, sender_name[0].lower() + sender_name[1:])
 			dockWidget.setVisible(checked)
 	
 	def setDockWidgetVisibility(self, status):
-		if type(self.sender()) == QtGui.QDockWidget:
+		if type(self.sender()) == QtWidgets.QDockWidget:
 			if status:
 				self.toggleDockWidget(True)
 			else:
